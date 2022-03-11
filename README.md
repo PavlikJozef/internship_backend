@@ -9,7 +9,7 @@
 > GitHub account and repository set up
 >> git commands: clone, add, commit, push 
 
-```javascript
+```cs
 GIT COMMANDS
 
 # git clone
