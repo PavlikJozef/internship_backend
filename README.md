@@ -9,4 +9,22 @@
 > GitHub account and repository set up
 >> git commands: clone, add, commit, push 
 
+```javascript
+GIT COMMANDS
+
+# git clone
+- clones existing repository and makes local version
+
+# git add
+- adds selected file or files for incoming commit
+
+# git commit -m "Commit message"
+- commits executed changes on files
+
+# git push
+- pushes commit into repository
+```
+
+--- 
+
 
