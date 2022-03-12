@@ -6,7 +6,7 @@
 
 ## Week 1
 
-> GitHub account and repository set up
+> GitHub repository set up
 >> git commands: clone, add, commit, push 
 
 ```cs
