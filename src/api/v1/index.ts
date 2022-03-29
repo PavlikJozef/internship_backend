@@ -4,5 +4,6 @@ import PatientsRouter from './patients'
 const router = Router()
 
 export default () => {
-    router.use('/patients', PatientsRouter)
+    router.use('/patients', PatientsRouter())
+    return router
 }

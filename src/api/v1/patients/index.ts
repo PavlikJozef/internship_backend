@@ -1,12 +1,21 @@
 import { Router } from 'express'
 
-//import validationMiddleware from '../../../middleware/validationMiddleware'
+import validationMiddleware from '../../../middlewares/validationMiddleware'
+
 import * as GetPatients from './get.patients'
+import * as GetPatient from './get.patient'
+import * as PostPatient from './post.patient'
+import * as PutPatient from './put.patient'
+import * as DeletePatient from './delete.patient'
 
 const router = Router()
 
 export default () => {
-    router.get('/', ()=> {}, GetPatients.workflow)
+    router.get('/', validationMiddleware(), GetPatients.workflow)
+    router.get('/:id', validationMiddleware(), GetPatient.workflow)
+    // router.post('/', () => { }, PostPatient.workflow)
+    // router.put('/:id', () => { }, PutPatient.workflow)
+    // router.delete('/:id', () => { }, DeletePatient.workflow)
     return router
 }
 

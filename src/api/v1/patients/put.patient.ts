@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
 export const workflow = (req: Request, res: Response) => {
     //res.send("My response from get.patients")
@@ -6,12 +6,6 @@ export const workflow = (req: Request, res: Response) => {
         patients: [{
             id: 1,
             name: "Joe"
-        }, {
-            id: 2,
-            name: "Adam"
-        }, {
-            id: 3,
-            name: "Kate"
         }]
     })
 }
