@@ -17,7 +17,7 @@ export const workflow = (req: Request, res: Response) => {
         name: req.body.name
     }
     if (!patient.name) {
-        res.status(404).send("Patient name is empty")
+        res.status(400).send("Patient name is required")
     } else {
         patients.push(patient)
         res.json(patients)
