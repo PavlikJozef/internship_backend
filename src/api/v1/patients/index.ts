@@ -13,9 +13,9 @@ const router = Router()
 export default () => {
     router.get('/', validationMiddleware(), GetPatients.workflow)
     router.get('/:id', validationMiddleware(), GetPatient.workflow)
-    // router.post('/', () => { }, PostPatient.workflow)
-    // router.put('/:id', () => { }, PutPatient.workflow)
-    // router.delete('/:id', () => { }, DeletePatient.workflow)
+    router.post('/', validationMiddleware(), PostPatient.workflow)
+    router.put('/:id', validationMiddleware(), PutPatient.workflow)
+    router.delete('/:id', validationMiddleware(), DeletePatient.workflow)
     return router
 }
 

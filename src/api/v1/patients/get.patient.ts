@@ -12,9 +12,11 @@ const patients = [{
 }]
 
 export const workflow = (req: Request, res: Response) => {
-    const patient = patients.find(c => c.id === parseInt(req.params.id))
+    const patient = patients.find(patient => patient.id === parseInt(req.params.id))
     if (!patient) {
         res.status(404).send("Patient ID not found")
+    } else {
+        res.json(patients.filter(patient => patient.id === parseInt(req.params.id)))
     }
-    res.send(patient);
+    //res.send(patient);
 }
