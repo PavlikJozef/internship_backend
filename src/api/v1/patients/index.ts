@@ -11,11 +11,11 @@ import * as DeletePatient from './delete.patient'
 const router = Router()
 
 export default () => {
-    router.get('/', validationMiddleware(), GetPatients.workflow)
-    router.get('/:id', validationMiddleware(), GetPatient.workflow)
-    router.post('/', validationMiddleware(), PostPatient.workflow)
-    router.put('/:id', validationMiddleware(), PutPatient.workflow)
-    router.delete('/:id', validationMiddleware(), DeletePatient.workflow)
+    router.get('/', GetPatients.workflow)
+    router.get('/:id', GetPatient.workflow)
+    router.post('/', validationMiddleware(PostPatient.schema), PostPatient.workflow)
+    router.put('/:id', validationMiddleware(PutPatient.schema), PutPatient.workflow)
+    router.delete('/:id', DeletePatient.workflow)
     return router
 }
 

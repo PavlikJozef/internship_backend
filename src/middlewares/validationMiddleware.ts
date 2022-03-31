@@ -1,10 +1,19 @@
 import { Request, Response, NextFunction } from "express"
-import Joi from "joi"
-export default function validationMiddleware() {
+import Joi, {Schema} from "joi"
+
+export default function validationMiddleware(schema: Schema) {
     return (req: Request, res: Response, next: NextFunction) => {
-        const validation = {
-            name: Joi.string().max(100).required()
+        const { query, body, params } = req
+        const validationResult = schema.validate({ query, body, params})
+
+        if (validationResult.error){
+            return res.status(400).json(validationResult.error)
         }
+
+        req.body = validationResult.value.body
+        req.params = validationResult.value.params
+        req.query = validationResult.value.query
+
         return next()
     }
 }
