@@ -36,6 +36,11 @@ const patients = [{
     diagnoseID: 3
 }]
 
+enum GENDER {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE'
+}
+
 export const schema = Joi.object({
     body: Joi.object({
         firstName: Joi.string().max(100).required(),
@@ -44,7 +49,7 @@ export const schema = Joi.object({
         weight: Joi.number().min(1).max(200).required(),
         height: Joi.number().min(1).required(),
         //indetificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
-        gender: Joi.string().valid('MALE', 'FEMALE').required(),
+        gender: Joi.string().valid(...Object.values(GENDER)).required(),
         age: Joi.number().min(0).required(),
         personType: Joi.string().valid("ADULT", "CHILD").required(),
         //substanceAmout: Joi.number().min(1).required(),
@@ -53,6 +58,17 @@ export const schema = Joi.object({
     query: Joi.object(),
     params: Joi.object()
 })
+
+interface IPatient {
+    firstName: string
+    lastName: string
+    birthdate: Date
+    height: number
+    weight: number
+    identificationNumber: string
+    gender: GENDER
+    diagnoseID: number
+}
 
 export const workflow = (req: Request, res: Response) => {
     const { body } = req

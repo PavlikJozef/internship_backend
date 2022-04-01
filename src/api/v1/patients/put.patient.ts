@@ -18,23 +18,41 @@ const patients = [{
     weight: 67
 }]
 
+enum GENDER {
+    MALE = 'MALE',
+    FEMALE = 'FEMALE'
+}
+
 export const schema = Joi.object({
     body: Joi.object({
-        firstName: Joi.string().max(100).required(),
-        lastName: Joi.string().max(100).required(),
-        birthdate: Joi.date().required(),
-        weight: Joi.number().min(1).max(200).required(),
-        height: Joi.number().min(1).required(),
-        //indetificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
-        gender: Joi.string().valid('MALE', 'FEMALE').required(),
-        age: Joi.number().min(0).required(),
-        personType: Joi.string().valid("ADULT", "CHILD").required(),
+        firstName: Joi.string().max(100),
+        lastName: Joi.string().max(100),
+        birthdate: Joi.date(),
+        weight: Joi.number().min(1).max(200),
+        height: Joi.number().min(1),
+        //indetificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12),
+        gender: Joi.string().valid('MALE', 'FEMALE'),
+        age: Joi.number().min(0),
+        personType: Joi.string().valid(...Object.values(GENDER)),
         //substanceAmout: Joi.number().min(1).required(),
-        diagnoseID: Joi.number().integer().min(1).required()
+        diagnoseID: Joi.number().integer().min(1)
     }),
     query: Joi.object(),
-    params: Joi.object()
+    params: Joi.object({
+        patientID: Joi.number().integer().required()
+    })
 })
+
+interface IPatient {
+    firstName: string
+    lastName: string
+    birthdate: Date
+    height: number
+    weight: number
+    identificationNumber: string
+    gender: GENDER
+    diagnoseID: number
+}
 
 export const workflow = (req: Request, res: Response) => {
     //const patient = patients.find(patient => patient.id === parseInt(req.params.id))
