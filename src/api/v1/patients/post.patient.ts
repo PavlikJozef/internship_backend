@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import { GENDERS } from "../../../utils/enums";
 
 const patients = [{
     id: 1,
@@ -49,7 +50,7 @@ export const schema = Joi.object({
         weight: Joi.number().min(1).max(200).required(),
         height: Joi.number().min(1).required(),
         //indetificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
-        gender: Joi.string().valid(...Object.values(GENDER)).required(),
+        gender: Joi.string().valid(...GENDERS).required(),
         age: Joi.number().min(0).required(),
         personType: Joi.string().valid("ADULT", "CHILD").required(),
         //substanceAmout: Joi.number().min(1).required(),

@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "debug": "cross-env NODE_ENV=development nodemon --exec 'node --inspect -r dotenv/config -r ts-node/register src/index.ts'",
+    "production": "cross-env NODE_ENV=production nodemon --exec 'node --inspect -r dotenv/config -r ts-node/register src/index.ts'",
     "start": "nodemon ./src/index.ts"
   },
   "author": "Jozef Pavlík <pavlik.jozef.unize@gmail.com>",
