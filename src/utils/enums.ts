@@ -4,7 +4,10 @@ export enum GENDER {
 }
 
 export enum SUBSTANCE_TIME_UNIT {
-
+    SECOND = 'SECOND',
+    MINUTE = 'MINUTE',
+    HOUR = 'HOUR',
+    DAY = 'DAY'
 }
 
 export const GENDERS = Object.values(GENDER)
