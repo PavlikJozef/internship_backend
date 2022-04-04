@@ -26,28 +26,36 @@ export default (sequelize: Sequelize, modelName: string) => {
             autoIncrement: true
         },
         firstName: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: false
         },
         lastName: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT,
+            allowNull: false
         },
         birthdate: {
-            type: DataTypes.DATEONLY
+            type: DataTypes.DATEONLY,
+            allowNull: false
         },
         weight: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         height: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         identificationNumber: {
-            type: DataTypes.STRING(12)
+            type: DataTypes.STRING(12),
+            allowNull: false
         },
         gender: {
-            type: DataTypes.ENUM(...GENDERS)
+            type: DataTypes.ENUM(...GENDERS),
+            allowNull: false
         },
         diagnoseID: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, 
     {
@@ -59,7 +67,7 @@ export default (sequelize: Sequelize, modelName: string) => {
     });
 
     (PatientModel as any).associate = (models: Models) => {
-        //PatientModel.belongsTo(models.Diagnose, )
+        PatientModel.belongsTo(models.Diagnose, { foreignKey: 'diagnoseID'})
     }
 
     return PatientModel
