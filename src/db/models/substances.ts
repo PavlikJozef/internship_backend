@@ -42,7 +42,7 @@ export default (sequelize: Sequelize, modelName: string) => {
 	);
 
 	(SubstanceModel as any).associate = (models: Models) => {
-		SubstanceModel.belongsTo(models.Diagnose, { foreignKey: 'substanceID' })
+		SubstanceModel.hasMany(models.Diagnose, { foreignKey: 'substanceID' })
 	}
 
 	return SubstanceModel
