@@ -1,17 +1,26 @@
 import { Request, Response } from "express";
+import { models } from "../../../db";
 
-const patients = [{
-    id: 1,
-    name: "Joe"
-}, {
-    id: 2,
-    name: "Adam"
-}, {
-    id: 3,
-    name: "Alex"
-}]
+export const workflow = async (req: Request, res: Response) => {
 
-export const workflow = (req: Request, res: Response) => {
+    const {
+        Patient
+    } = models 
+    const id = Number(req.params.id)
+
+    const patient = await Patient.destroy({
+        where: {
+            id
+        }
+    })
+
+    if(!patient){
+        res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"})
+    } else{
+        res.status(200).json({ message: "Patient with this ID was succesfully deleted", type: "SUCCESS"})
+    }
+
+    /*
     const patient = patients.find(patient => patient.id === parseInt(req.params.id))
     if (!patient) {
         res.status(404).send("Patient ID not found")
@@ -20,4 +29,5 @@ export const workflow = (req: Request, res: Response) => {
         patients.splice(index, 1);
         res.json(patient);
     }
+    */
 }
