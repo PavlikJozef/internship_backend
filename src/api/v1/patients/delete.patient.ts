@@ -6,6 +6,7 @@ export const workflow = async (req: Request, res: Response) => {
     const {
         Patient
     } = models 
+
     const id = Number(req.params.id)
 
     const patient = await Patient.destroy({
@@ -17,7 +18,7 @@ export const workflow = async (req: Request, res: Response) => {
     if(!patient){
         res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"})
     } else{
-        res.status(200).json({ message: "Patient with this ID was succesfully deleted", type: "SUCCESS"})
+        res.status(200).json({ message: `Patient with ID ${id} was succesfully deleted`, type: "SUCCESS"})
     }
 
     /*
