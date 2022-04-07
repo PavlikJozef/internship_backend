@@ -2,8 +2,10 @@ import { options } from 'joi'
 import { Sequelize, Model, DataTypes } from 'sequelize'
 import { Models } from '..'
 import { GENDER, GENDERS } from '../../utils/enums'
+import { DiagnoseModel } from './diagnoses'
 
 export class PatientModel extends Model {
+    
     id: number
     firstName: string
     lastName: string
@@ -14,6 +16,7 @@ export class PatientModel extends Model {
     gender: GENDER
 
     diagnoseID: number
+    diagnose: DiagnoseModel
 }
 
 export default (sequelize: Sequelize, modelName: string) => {

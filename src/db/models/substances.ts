@@ -1,12 +1,16 @@
 import { Sequelize, Model, DataTypes } from 'sequelize'
 import { Models } from '..'
 import { SUBSTANCE_TIME_UNIT, SUBSTANCE_TIME_UNITS } from '../../utils/enums'
+import { DiagnoseModel } from './diagnoses'
 
 export class SubstanceModel extends Model {
+
     id: number
     name: string
     timeUnit: SUBSTANCE_TIME_UNIT
     halfLife: number
+
+	diagnose: DiagnoseModel[]
 }
 
 export default (sequelize: Sequelize, modelName: string) => {
@@ -37,7 +41,7 @@ export default (sequelize: Sequelize, modelName: string) => {
 			timestamps: false,
 			sequelize,
 			modelName,
-			tableName: 'diagnoses',
+			tableName: 'substances',
 		}
 	);
 

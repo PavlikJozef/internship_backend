@@ -4,6 +4,7 @@ import { PatientModel } from './patients'
 import { SubstanceModel } from './substances'
 
 export class DiagnoseModel extends Model {
+	
     id: number
     name: string
     description: string
