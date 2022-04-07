@@ -1,46 +1,8 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import { DiagnoseModel } from "../../../db/models/diagnoses";
+import { PatientModel } from "../../../db/models/patients";
 import { GENDERS } from "../../../utils/enums";
-
-const patients = [{
-    id: 1,
-    firstName: "Joe",
-    lastName: "Black",
-    birthdate: "2021-02-30T15:28:27:612Z",
-    weight: 89,
-    height: 172,
-    gender: 'MALE',
-    age: 22,
-    personType: 'ADULT',
-    diagnoseID: 2
-}, {
-    id: 2,
-    firstName: "Adam",
-    lastName: "Black",
-    birthdate: "2001-02-30T15:28:27:612Z",
-    weight: 79,
-    height: 162,
-    gender: 'MALE',
-    age: 32,
-    personType: 'ADULT',
-    diagnoseID: 1
-}, {
-    id: 3,
-    firstName: "Alex",
-    lastName: "Black",
-    birthdate: "2020-02-30T15:28:27:612Z",
-    weight: 109,
-    height: 185,
-    gender: 'MALE',
-    age: 44,
-    personType: 'ADULT',
-    diagnoseID: 3
-}]
-
-enum GENDER {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE'
-}
 
 export const schema = Joi.object({
     body: Joi.object({
@@ -49,30 +11,45 @@ export const schema = Joi.object({
         birthdate: Joi.date().required(),
         weight: Joi.number().min(1).max(200).required(),
         height: Joi.number().min(1).required(),
-        //indetificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
+        identificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
         gender: Joi.string().valid(...GENDERS).required(),
-        age: Joi.number().min(0).required(),
-        personType: Joi.string().valid("ADULT", "CHILD").required(),
-        //substanceAmout: Joi.number().min(1).required(),
         diagnoseID: Joi.number().integer().min(1).required()
     }),
     query: Joi.object(),
     params: Joi.object()
 })
 
-interface IPatient {
-    firstName: string
-    lastName: string
-    birthdate: Date
-    height: number
-    weight: number
-    identificationNumber: string
-    gender: GENDER
-    diagnoseID: number
-}
+export const workflow = async (req: Request, res: Response) => {
+    console.log("I came here 1")
 
-export const workflow = (req: Request, res: Response) => {
-    const { body } = req
+    const patientID = await PatientModel.findAll({
+        where: {
+            identificationNumber: req.body.identificationNumber
+        }
+    })
+    console.log("I came here2")
+    if(patientID.length > 0){
+       res.status(409).json({ message: "Patient with this ID already exists in database", type: "FAILED"}) 
+       console.log("I came here3")
+    } else {
+        const diagnoseID = await DiagnoseModel.findAll({
+            where: {
+                id: req.body.diagnoseID 
+            }
+        })
+
+        if(diagnoseID.length == 0){
+            res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
+        } else {
+            const newPatientID = await PatientModel.findAll()
+            const patient = await PatientModel.create({
+                id: newPatientID.length + 2,
+                ...req.body
+            })
+            res.status(200).json({ message: "Patient was succesfully added into database", type: "SUCCESS"})
+        }
+    }
+    /*
     const patient = {
         id: patients.length + 1,
         firstName: body.firstName,
@@ -88,6 +65,7 @@ export const workflow = (req: Request, res: Response) => {
     console.log(patient)
     patients.push(patient)
     res.json(patients)
+    */
     /*
     const patient = {
         id: patients.length + 1,
