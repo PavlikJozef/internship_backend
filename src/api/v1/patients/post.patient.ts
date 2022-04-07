@@ -20,17 +20,15 @@ export const schema = Joi.object({
 })
 
 export const workflow = async (req: Request, res: Response) => {
-    console.log("I came here 1")
 
     const patientID = await PatientModel.findAll({
         where: {
             identificationNumber: req.body.identificationNumber
         }
     })
-    console.log("I came here2")
+
     if(patientID.length > 0){
        res.status(409).json({ message: "Patient with this ID already exists in database", type: "FAILED"}) 
-       console.log("I came here3")
     } else {
         const diagnoseID = await DiagnoseModel.findAll({
             where: {
@@ -41,9 +39,7 @@ export const workflow = async (req: Request, res: Response) => {
         if(diagnoseID.length == 0){
             res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
         } else {
-            const newPatientID = await PatientModel.findAll()
             const patient = await PatientModel.create({
-                id: newPatientID.length + 2,
                 ...req.body
             })
             res.status(200).json({ message: "Patient was succesfully added into database", type: "SUCCESS"})
