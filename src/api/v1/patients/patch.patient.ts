@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
-import Joi from "joi";
 import { DiagnoseModel } from "../../../db/models/diagnoses";
 import { PatientModel } from "../../../db/models/patients";
 import { GENDERS } from "../../../utils/enums";
+
+const Joi = require('joi').extend(require('@joi/date'))
 
 export const schema = Joi.object({
     body: Joi.object({
         firstName: Joi.string().max(100),
         lastName: Joi.string().max(100),
-        birthdate: Joi.date().required(),
+        birthdate: Joi.date().format('YYYY-MM-DD').required(),
         weight: Joi.number().min(1).max(200),
         height: Joi.number().min(1).required(),
         identificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12),
@@ -21,36 +22,34 @@ export const schema = Joi.object({
 
 export const workflow = async (req: Request, res: Response) => {
 
-    const id = Number(req.params.id)
+    // use return in case of else part, findByPk -> findAll, ... - is not necessary, validate id number and birthdate
 
-    const patientID = await PatientModel.findAll({
-        where: {
-            id
+    const { params, body } = req
+
+    const id = Number(params.id)
+
+    const patientID = await PatientModel.findByPk(id)
+    
+    if(!patientID){
+        return res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 
+    } 
+
+    const diagnoseID = await DiagnoseModel.findByPk(body.diagnoseID)
+        
+    if(!diagnoseID){
+        return res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
+    }
+    
+    const patient = await PatientModel.update({
+            ...body
+        },{
+            where: {
+                id
         }
     })
-    
-    if(patientID.length == 0){
-       res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 
-    } else {
-        const diagnoseID = await DiagnoseModel.findAll({
-            where: {
-                id: req.body.diagnoseID 
-            }
-        })
         
-        if(diagnoseID.length == 0){
-            res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
-        } else {
-            const patient = await PatientModel.update({
-                ...req.body
-            },{
-                where: {
-                    id
-                }
-            })
-            res.status(200).json({ message: "Patient data were succesfully updated", type: "SUCCESS"})
-        }
-    }
+    return res.status(200).json({ message: "Patient data were succesfully updated", type: "SUCCESS"})
+
     
     /*
     //const patient = patients.find(patient => patient.id === parseInt(req.params.id))

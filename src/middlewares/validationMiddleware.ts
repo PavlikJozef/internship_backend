@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import Joi, {Schema} from "joi"
+import {Schema} from "joi"
 
 export default function validationMiddleware(schema: Schema) {
     return (req: Request, res: Response, next: NextFunction) => {
