@@ -21,7 +21,7 @@ export const schema = Joi.object({
 
 export const workflow = async (req: Request, res: Response) => {
 
-    const patientID = await PatientModel.findAll({
+    const patientID: PatientModel[] = await PatientModel.findAll({
         where: {
             identificationNumber: req.body.identificationNumber
         }

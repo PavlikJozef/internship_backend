@@ -28,7 +28,7 @@ export const workflow = async (req: Request, res: Response) => {
 
     const id = Number(params.id)
 
-    const patientID = await PatientModel.findByPk(id)
+    const patientID: PatientModel = await PatientModel.findByPk(id)
     
     if(!patientID){
         return res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 

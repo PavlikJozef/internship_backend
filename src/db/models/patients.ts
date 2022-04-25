@@ -12,7 +12,7 @@ export class PatientModel extends Model {
     birthdate: Date
     weight: number
     height: number
-    indentificationNumber: string
+    identificationNumber: string
     gender: GENDER
 
     diagnoseID: number
