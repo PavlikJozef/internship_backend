@@ -7,3 +7,9 @@ export const getAge = (birthdate: Date) => {
 export const getPersonType = (value: number) => {
     return value >= 18 ? PERSON_TYPE.ADULT : PERSON_TYPE.CHILD;  
 }
+
+export const getSubstanceAmount = (personType: PERSON_TYPE, weight: number) => {
+    let substanceAmount: number
+
+    return substanceAmount
+}
