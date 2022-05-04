@@ -1,6 +1,6 @@
 import { GENDER } from "./enums"
 
-interface IPatient {
+export interface IPatient {
     firstName: string
     lastName: string
     birthdate: Date

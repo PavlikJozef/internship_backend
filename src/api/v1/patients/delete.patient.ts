@@ -24,13 +24,13 @@ export const workflow = async (req: Request, res: Response) => {
 
     const { params } = req
 
-    // if(!Number.isInteger(params.id)) res.status(400).json({ message: `id: ${params.id} is not an integer`})
+    if(!Number.isInteger(params.id)) res.status(400).json({ message: `Id: ${params.id} is not an integer`})
 
     const id: number = Number(params.id)
 
     const patient: PatientModel = await Patient.findByPk(id)
 
-    if(!patient) res.status(404).json({ message: `Patient with id: ${patient.id} was not found`, type: "FAILED"})
+    if(!patient) return res.status(404).json({ message: `Patient with id: ${patient.id} was not found`, type: "FAILED"})
 
     const patientID: number = await Patient.destroy({
         where: {

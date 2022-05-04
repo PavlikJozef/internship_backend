@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { DiagnoseModel } from "../../../db/models/diagnoses";
 import { PatientModel } from "../../../db/models/patients";
 import { GENDERS } from "../../../utils/enums";
+import { IPatient } from "../../../utils/interfaces";
 
 const Joi = require('joi').extend(require('@joi/date'))
 
@@ -29,28 +30,28 @@ export const responseSchema = Joi.object({
 
 export const workflow = async (req: Request, res: Response) => {
 
-    // use return in case of else part, findByPk -> findAll, ... - is not necessary, validate id number and birthdate
+    const { params, body } : { params: any, body: IPatient} = req
 
-    const { params, body } = req
-
-    const id = Number(params.id)
+    const id: number = Number(params.id)
 
     const patientID: PatientModel = await PatientModel.findByPk(id)
     
-    if(!patientID) return res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 
+    if(!patientID) return res.status(404).json({ message: `Patient with id ${id} was not found`, type: "FAILED"}) 
 
-    const diagnoseID = await DiagnoseModel.findByPk(body.diagnoseID)
+    if(patientID.identificationNumber === body.identificationNumber) return res.status(409).json({ message: "Patient with this identification number already exists in database", type: "FAILED"})
+
+    const diagnoseID: DiagnoseModel = await DiagnoseModel.findByPk(body.diagnoseID)
         
-    if(!diagnoseID) return res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
+    if(!diagnoseID) return res.status(404).json({ message: `Diagnose with id: ${body.diagnoseID} does not exist in database` , type: "FAILED"})
     
-    const patient = await PatientModel.update({
-            ...body
-        },{
+    const patient: [number, PatientModel[]] = await PatientModel.update(
+            body
+        ,{
             where: {
-                id
+                id: params.id
         }
     })
         
-    return res.status(200).json({ message: "Patient data were succesfully updated", type: "SUCCESS"})
+    return res.status(200).json({ message: `Patient data with id: ${params.id} were succesfully updated`, type: "SUCCESS"})
 
 }

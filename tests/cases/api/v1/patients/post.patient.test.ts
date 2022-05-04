@@ -12,10 +12,10 @@ describe(`[POST] ${url}`, () => {
             .send({
                 firstName: "Joe",
                 lastName: "Doe",
-                birthdate: "2022-11-26",
+                birthdate: "2020-11-26",
                 weight: 81,
                 height: 183,
-                identificationNumber: "as12df34gh56",
+                identificationNumber: "qw12as36zx98",
                 gender: "MALE",
                 diagnoseID: 15
             })
@@ -37,7 +37,7 @@ describe(`[POST] ${url}`, () => {
                 birthdate: "2022-11-26",
                 weight: 81,
                 height: 183,
-                identificationNumber: "cdd2df34gh89",
+                identificationNumber: "aaa2df34gh89",
                 gender: "MALE",
                 diagnoseID: "aa"
             })
@@ -59,9 +59,9 @@ describe(`[POST] ${url}`, () => {
                 birthdate: "2022-11-26",
                 weight: 81,
                 height: 183,
-                identificationNumber: "as12df34gh99",
+                identificationNumber: "78podfaagh99",
                 gender: "MALE",
-                diagnoseID: 999999
+                diagnoseID: 979821
             })
             .set('Content-Type', 'application/json')
         
@@ -103,7 +103,7 @@ describe(`[POST] ${url}`, () => {
                 birthdate: "2022-11-26",
                 weight: 81,
                 height: 183,
-                identificationNumber: "as12df34gh56",
+                identificationNumber: "qw12as36zx98",
                 gender: "MALE",
                 diagnoseID: 15
             })

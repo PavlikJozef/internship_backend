@@ -14,6 +14,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 weight: 99,
                 height: 183,
                 gender: "FEMALE",
+                identificationNumber: "axxxxfllgh99",
                 diagnoseID: 10
             })
             .set('Content-Type', 'application/json')
@@ -32,6 +33,48 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 firstName: "Joe",
                 lastName: "Doe",
                 birthdate: "2022-11-26",
+                weight: 81,
+                height: 183,
+                gender: "MALE",
+                diagnoseID: 14
+            })
+            .set('Content-Type', 'application/json')
+            console.log(url + "a" + patientID)
+        expect(response.status).to.eq(400)
+        expect(response.type).to.eq('application/json')
+
+        const validationResult = responseSchema.validate(response.body)
+        expect(validationResult.error).to.eq(undefined)
+    })
+
+    it('Response shoud update particular patient (400) - Bad Request (firstName should be string, not integer)', async () => {
+        const response = await supertest(app)
+            .patch(url + patientID)
+            .send({
+                firstName: 123,
+                lastName: "Doe",
+                birthdate: "2022-11-26",
+                weight: 81,
+                height: 183,
+                gender: "MALE",
+                diagnoseID: 14
+            })
+            .set('Content-Type', 'application/json')
+            console.log(url + "a" + patientID)
+        expect(response.status).to.eq(400)
+        expect(response.type).to.eq('application/json')
+
+        const validationResult = responseSchema.validate(response.body)
+        expect(validationResult.error).to.eq(undefined)
+    })
+
+    it('Response shoud update particular patient (400) - Bad Request (invalid date format, expected YYYY-MM-DD)', async () => {
+        const response = await supertest(app)
+            .patch(url + patientID)
+            .send({
+                firstName: "Filip",
+                lastName: "Doe",
+                birthdate: "2022-1a1-26",
                 weight: 81,
                 height: 183,
                 gender: "MALE",
@@ -67,26 +110,26 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
         expect(validationResult.error).to.eq(undefined)
     })
 
-    it('Response shoud update particular patient (405) - Method Not Allowed (patch method should be used instead of get in this case)', async () => {
-        const response = await supertest(app)
-            .get(url + patientID)
-            .send({
-                firstName: "Joe",
-                lastName: "Doe",
-                birthdate: "2022-11-26",
-                weight: 81,
-                height: 183,
-                gender: "MALE",
-                diagnoseID: 14
-            })
-            .set('Content-Type', 'application/json')
+    // it('Response shoud update particular patient (405) - Method Not Allowed (patch method should be used instead of get in this case)', async () => {
+    //     const response = await supertest(app)
+    //         .get(url + patientID)
+    //         .send({
+    //             firstName: "Joe",
+    //             lastName: "Doe",
+    //             birthdate: "2022-11-26",
+    //             weight: 81,
+    //             height: 183,
+    //             gender: "MALE",
+    //             diagnoseID: 14
+    //         })
+    //         .set('Content-Type', 'application/json')
 
-        expect(response.status).to.eq(405)
-        expect(response.type).to.eq('application/json')
+    //     expect(response.status).to.eq(405)
+    //     expect(response.type).to.eq('application/json')
 
-        const validationResult = responseSchema.validate(response.body)
-        expect(validationResult.error).to.eq(undefined)
-    })
+    //     const validationResult = responseSchema.validate(response.body)
+    //     expect(validationResult.error).to.eq(undefined)
+    // })
 
     it('Response shoud update particular patient (409) - Conflict (conflict with identification number, which is already used)', async () => {
         const response = await supertest(app)
@@ -97,7 +140,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 birthdate: "2022-11-26",
                 weight: 81,
                 height: 183,
-                identificationNumber: "as12df34gh56",
+                identificationNumber: "axxxxfllgh99",
                 gender: "MALE",
                 diagnoseID: 14
             })

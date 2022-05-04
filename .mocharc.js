@@ -4,5 +4,5 @@ module.exports = {
     require: ['./tests/global.ts'],
     parallel: true,
     timeout: 30000,
-   spec: ['./tests/**/get.patients.test.ts']
+   spec: ['./tests/**/patch.patient.test.ts']
 }

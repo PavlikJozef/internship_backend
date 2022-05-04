@@ -57,7 +57,7 @@ export const workflow = async (req: Request, res: Response) => {
         }
     })
 
-    if(!patient) return res.status(404).send(`Patient with ID: ${id} was not found`)
+    if(!patient) return res.status(404).send(`Patient with ID: ${id} was not found in database`)
         
     const age: number = getAge(patient.birthdate)
     const personType: PERSON_TYPE = getPersonType(age)

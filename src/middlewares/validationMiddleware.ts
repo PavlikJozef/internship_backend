@@ -7,8 +7,12 @@ export default function validationMiddleware(schema: Schema) {
         const validationResult = schema.validate({ query, body, params})
 
         if (validationResult.error){
-            return res.status(400).json(validationResult.error)
+            return res.status(400).json({message: validationResult.error.message, type: 'FAILED'})
         }
+
+        // if (validationResult.error){
+        //     return res.status(400).json(validationResult.error)
+        // }
 
         req.body = validationResult.value.body
         req.params = validationResult.value.params
