@@ -11,12 +11,10 @@ import * as DeletePatient from './delete.patient'
 const router = Router()
 
 export default () => {
-    router.get('/', GetPatients.workflow)
-    router.get('/:id', GetPatient.workflow)
-    router.post('/', validationMiddleware(PostPatient.schema), PostPatient.workflow)
-    router.patch('/:id', validationMiddleware(PatchPatient.schema), PatchPatient.workflow)
-    router.delete('/:id', DeletePatient.workflow)
+    router.get('/', validationMiddleware(GetPatients.validationSchema),GetPatients.workflow)
+    router.get('/:id', validationMiddleware(GetPatient.validationSchema), GetPatient.workflow)
+    router.post('/', validationMiddleware(PostPatient.validationSchema), PostPatient.workflow)
+    router.patch('/:id', validationMiddleware(PatchPatient.validationSchema), PatchPatient.workflow)
+    router.delete('/:id', validationMiddleware(DeletePatient.validationSchema), DeletePatient.workflow)
     return router
 }
-
-// bonusova uloha: ako validovat vstupy, pred pustenim k logike end pointu, vyuzitie middlewara

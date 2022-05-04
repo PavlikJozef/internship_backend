@@ -1,21 +1,19 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import { models } from "../../../db";
-import { GENDERS } from "../../../utils/enums";
+import { PatientModel } from "../../../db/models/patients";
 
-export const schema = Joi.object({
-    body: Joi.object({
-        firstName: Joi.string().max(100).required(),
-        lastName: Joi.string().max(100).required(),
-        birthdate: Joi.date().required(),
-        weight: Joi.number().min(1).max(200).required(),
-        height: Joi.number().min(1).required(),
-        identificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
-        gender: Joi.string().valid(...GENDERS).required(),
-        diagnoseID: Joi.number().integer().min(1).required()
-    }),
+export const validationSchema = Joi.object({
+    body: Joi.object(),
     query: Joi.object(),
-    params: Joi.object()
+    params: Joi.object({
+        id: Joi.number().integer().min(1).valid()
+    })
+})
+
+export const responseSchema = Joi.object({
+    message: Joi.string().required(),
+    type: Joi.string().required()
 })
 
 export const workflow = async (req: Request, res: Response) => {
@@ -24,28 +22,22 @@ export const workflow = async (req: Request, res: Response) => {
         Patient
     } = models 
 
-    const id = Number(req.params.id)
+    const { params } = req
 
-    const patient = await Patient.destroy({
+    // if(!Number.isInteger(params.id)) res.status(400).json({ message: `id: ${params.id} is not an integer`})
+
+    const id: number = Number(params.id)
+
+    const patient: PatientModel = await Patient.findByPk(id)
+
+    if(!patient) res.status(404).json({ message: `Patient with id: ${patient.id} was not found`, type: "FAILED"})
+
+    const patientID: number = await Patient.destroy({
         where: {
-            id
+            id: patient.id
         }
     })
 
-    if(!patient){
-        res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"})
-    } else{
-        res.status(200).json({ message: `Patient with ID ${id} was succesfully deleted`, type: "SUCCESS"})
-    }
+    return res.status(200).json({ message: `Patient with ID ${patient.id} was succesfully deleted`, type: "SUCCESS"})
 
-    /*
-    const patient = patients.find(patient => patient.id === parseInt(req.params.id))
-    if (!patient) {
-        res.status(404).send("Patient ID not found")
-    } else {
-        const index = patients.indexOf(patient);
-        patients.splice(index, 1);
-        res.json(patient);
-    }
-    */
 }

@@ -1,10 +1,10 @@
 import supertest from "supertest";
 import { expect } from "chai"
 import app from "../../../../../src/app"
-import { schema } from '../../../../../src/api/v1/patients/patch.patient'
+import { responseSchema } from '../../../../../src/api/v1/patients/patch.patient'
 
 const url = "/api/v1/patients/"
-const patientID: number = 10
+const patientID: number = 1
 
 describe(`[PATCH] ${url + `${patientID}`}`, () => {
     it('Response shoud update particular patient (200) - OK', async () => {
@@ -14,16 +14,15 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 weight: 99,
                 height: 183,
                 gender: "FEMALE",
-                diagnoseID: 14
+                diagnoseID: 10
             })
             .set('Content-Type', 'application/json')
 
         expect(response.status).to.eq(200)
         expect(response.type).to.eq('application/json')
 
-        const validationResult = schema.validate(response.body)
+        const validationResult = responseSchema.validate(response.body)
         expect(validationResult.error).to.eq(undefined)
-        expect(response.body.patient.id).to.eq(patientID)
     })
 
     it('Response shoud update particular patient (400) - Bad Request (url address of this endpoint does not match with route)', async () => {
@@ -43,7 +42,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
         expect(response.status).to.eq(400)
         expect(response.type).to.eq('application/json')
 
-        const validationResult = schema.validate(response.body)
+        const validationResult = responseSchema.validate(response.body)
         expect(validationResult.error).to.eq(undefined)
     })
 
@@ -64,7 +63,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
         expect(response.status).to.eq(404)
         expect(response.type).to.eq('application/json')
 
-        const validationResult = schema.validate(response.body)
+        const validationResult = responseSchema.validate(response.body)
         expect(validationResult.error).to.eq(undefined)
     })
 
@@ -85,7 +84,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
         expect(response.status).to.eq(405)
         expect(response.type).to.eq('application/json')
 
-        const validationResult = schema.validate(response.body)
+        const validationResult = responseSchema.validate(response.body)
         expect(validationResult.error).to.eq(undefined)
     })
 
@@ -107,7 +106,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
         expect(response.status).to.eq(409)
         expect(response.type).to.eq('application/json')
 
-        const validationResult = schema.validate(response.body)
+        const validationResult = responseSchema.validate(response.body)
         expect(validationResult.error).to.eq(undefined)
     })
 })

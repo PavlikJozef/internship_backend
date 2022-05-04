@@ -4,7 +4,7 @@ import { DiagnoseModel } from "../../../db/models/diagnoses";
 import { PatientModel } from "../../../db/models/patients";
 import { GENDERS } from "../../../utils/enums";
 
-export const schema = Joi.object({
+export const validationSchema = Joi.object({
     body: Joi.object({
         firstName: Joi.string().max(100).required(),
         lastName: Joi.string().max(100).required(),
@@ -13,67 +13,39 @@ export const schema = Joi.object({
         height: Joi.number().min(1).required(),
         identificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12).required(),
         gender: Joi.string().valid(...GENDERS).required(),
-        diagnoseID: Joi.number().integer().min(1).required()
+        diagnoseID: Joi.number().integer().required()
     }),
     query: Joi.object(),
     params: Joi.object()
 })
 
+export const responseSchema = Joi.object({
+    message: Joi.string().required(),
+    type: Joi.string().required()
+})
+
 export const workflow = async (req: Request, res: Response) => {
 
-    const patientID: PatientModel[] = await PatientModel.findAll({
+    const { body } = req
+
+    const patientIdNumber = await PatientModel.findOne({
         where: {
-            identificationNumber: req.body.identificationNumber
+            identificationNumber: body.identificationNumber
         }
     })
 
-    if(patientID.length > 0){
-       res.status(409).json({ message: "Patient with this ID already exists in database", type: "FAILED"}) 
-    } else {
-        const diagnoseID = await DiagnoseModel.findAll({
-            where: {
-                id: req.body.diagnoseID 
-            }
-        })
+    if(!patientIdNumber) return res.status(409).json({ message: "Patient with this identification number already exists in database", type: "FAILED"}) 
+    
+    const diagnoseID = await DiagnoseModel.findByPk(body.diagnoseID)
 
-        if(diagnoseID.length == 0){
-            res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
-        } else {
-            const patient = await PatientModel.create({
-                ...req.body
-            })
-            res.status(200).json({ message: "Patient was succesfully added into database", type: "SUCCESS"})
-        }
-    }
-    /*
-    const patient = {
-        id: patients.length + 1,
-        firstName: body.firstName,
-        lastName: body.lastName,
-        birthdate: body.birthdate,
-        weight: body.weight,
-        height: body.height,
-        gender: body.gender,
-        age: body.age,
-        personType: body.personType,
-        diagnoseID: body.diagnoseID
-    }
-    console.log(patient)
-    patients.push(patient)
-    res.json(patients)
-    */
-    /*
-    const patient = {
-        id: patients.length + 1,
-        name: req.body.name
-    }
-    if (!patient.name) {
-        res.status(400).send("Patient name is required")
-    } else {
-        patients.push(patient)
-        res.json(patients)
-    }
-    */
+    if(Number.isInteger(diagnoseID)) return res.status(400).json({ message: "Diagnose must be an integer type", type: "FAILED"}) 
+
+    if(!diagnoseID) return res.status(404).json({ message: "Diagnose with this ID does not exist in database", type: "FAILED"})
+            
+    const patient = await PatientModel.create(
+        req.body
+    )
+            
+    return res.status(200).json({ message: `Patient was succesfully added into database, his id is ${patient.id}`, type: "SUCCESS"})
+
 }
-
-//validationResult.erro.details[0].message

@@ -5,19 +5,26 @@ import { GENDERS } from "../../../utils/enums";
 
 const Joi = require('joi').extend(require('@joi/date'))
 
-export const schema = Joi.object({
+export const validationSchema = Joi.object({
     body: Joi.object({
         firstName: Joi.string().max(100),
         lastName: Joi.string().max(100),
-        birthdate: Joi.date().format('YYYY-MM-DD').required(),
+        birthdate: Joi.date().format('YYYY-MM-DD'),
         weight: Joi.number().min(1).max(200),
-        height: Joi.number().min(1).required(),
+        height: Joi.number().min(1),
         identificationNumber: Joi.string().pattern(/^[a-zA-Z0-9]*$/).length(12),
         gender: Joi.string().valid(...GENDERS),
         diagnoseID: Joi.number().integer().min(1)
     }),
     query: Joi.object(),
-    params: Joi.object()
+    params: Joi.object({
+        id: Joi.number().integer().min(1).required()
+    })
+})
+
+export const responseSchema = Joi.object({
+    message: Joi.string().required(),
+    type: Joi.string().required()
 })
 
 export const workflow = async (req: Request, res: Response) => {
@@ -30,15 +37,11 @@ export const workflow = async (req: Request, res: Response) => {
 
     const patientID: PatientModel = await PatientModel.findByPk(id)
     
-    if(!patientID){
-        return res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 
-    } 
+    if(!patientID) return res.status(404).json({ message: "Patient with this ID was not found", type: "FAILED"}) 
 
     const diagnoseID = await DiagnoseModel.findByPk(body.diagnoseID)
         
-    if(!diagnoseID){
-        return res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
-    }
+    if(!diagnoseID) return res.status(404).json({ message: "Diagnose with this ID does not exist in database" , type: "FAILED"})
     
     const patient = await PatientModel.update({
             ...body
@@ -50,25 +53,4 @@ export const workflow = async (req: Request, res: Response) => {
         
     return res.status(200).json({ message: "Patient data were succesfully updated", type: "SUCCESS"})
 
-    
-    /*
-    //const patient = patients.find(patient => patient.id === parseInt(req.params.id))
-    const patient = patients.some(patient => patient.id === parseInt(req.params.id))
-    if (!patient) {
-        res.status(404).send("Patient ID not found")
-    } else {
-        const updatePatient = req.body;
-        patients.forEach(patient => {
-            if (patient.id === parseInt(req.params.id)) {
-                patient.firstName = updatePatient.firstName ? updatePatient.firstName : patient.firstName
-                patient.lastName = updatePatient.lastName ? updatePatient.lastName : patient.lastName
-                patient.weight = updatePatient.weight ? updatePatient.weight : patient.weight
-                res.json(patient)
-            }
-        })
-        //patient.name = req.body.name;
-        //res.send(patient);
-        //res.json(patients.filter(patient => patient.id === parseInt(req.params.id)))
-    }
-       */
 }
