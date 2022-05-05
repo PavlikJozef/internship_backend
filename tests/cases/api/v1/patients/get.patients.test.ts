@@ -31,12 +31,12 @@ describe(`[GET] ${url}`, () => {
         expect(response.type).to.eq('application/json')
     })
 
-    it('Response should return list of patients (404) - Not Found (invalid url address was given)', async () => {
+    it('Response should return list of patients (400) - Bad Request (invalid url address was given)', async () => {
         const response = await supertest(app)
-            .get(url)
+            .get(url+'/as')
             .set('Content-Type', 'application/json')
 
-        expect(response.status).to.eq(404)
+        expect(response.status).to.eq(400)
         expect(response.type).to.eq('application/json')
     })
 

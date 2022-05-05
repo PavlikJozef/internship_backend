@@ -56,15 +56,24 @@ export const workflow = async (req: Request, res: Response) => {
         Patient
     } = models 
 
-    const patients: PatientModel[] = await Patient.findAll({
+    const { query } = req
+
+    const limit: number = Number(query.limit)
+    const page: number = Number(query.page)
+
+    const patientsCount = await Patient.findAndCountAll({
         include: {
             model: DiagnoseModel,
                 include: [{
                     model: SubstanceModel
                 }]
             },
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        limit: limit,
+        offset: (page - 1) * limit
     })
+
+    const patients: PatientModel[] = patientsCount.rows
 
     if(!patients) return res.status(404).send("Patients were not found in database")
 
@@ -95,7 +104,13 @@ export const workflow = async (req: Request, res: Response) => {
                     }
                 }
             }
-        })
+        }),
+        pagination: {
+            limit: limit,
+            page: page,
+            totalPages: Math.ceil(patientsCount.count / limit),
+            totalCount: patientsCount.count
+        }
     })
 }
 

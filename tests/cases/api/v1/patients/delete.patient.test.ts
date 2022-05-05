@@ -19,21 +19,21 @@ describe(`[DELETE] ${url + `${patientID}`}`, () => {
         expect(validationResult.error).to.eq(undefined)
     })
 
-    // it('Response shoud delete particular patient (400) - Bad Request (calling wrong method)', async () => {
-    //     const response = await supertest(app)
-    //         .post(url)
-    //         .set('Content-Type', 'application/json')
-
-    //     expect(response.status).to.eq(400)
-    //     expect(response.type).to.eq('application/json')
-
-    //     const validationResult = responseSchema.validate(response.body)
-    //     expect(validationResult.error).to.eq(undefined)
-    // })
-
-    it('Response shoud delete particular patient (404) - Not Found (Patient with this id was not found in database)', async () => {
+    it('Response shoud delete particular patient (400) - Bad Request (id is not a number)', async () => {
         const response = await supertest(app)
-            .delete(url + 987965)
+            .delete(url + 'a')
+            .set('Content-Type', 'application/json')
+
+        expect(response.status).to.eq(400)
+        expect(response.type).to.eq('application/json')
+
+        const validationResult = responseSchema.validate(response.body)
+        expect(validationResult.error).to.eq(undefined)
+    })
+
+    it('Response shoud delete particular patient (400) - Not Found (patient does not exists)', async () => {
+        const response = await supertest(app)
+            .delete(url + 1000)
             .set('Content-Type', 'application/json')
 
         expect(response.status).to.eq(404)

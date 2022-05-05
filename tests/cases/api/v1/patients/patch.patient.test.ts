@@ -39,7 +39,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 diagnoseID: 14
             })
             .set('Content-Type', 'application/json')
-            console.log(url + "a" + patientID)
+
         expect(response.status).to.eq(400)
         expect(response.type).to.eq('application/json')
 
@@ -81,7 +81,7 @@ describe(`[PATCH] ${url + `${patientID}`}`, () => {
                 diagnoseID: 14
             })
             .set('Content-Type', 'application/json')
-            console.log(url + "a" + patientID)
+
         expect(response.status).to.eq(400)
         expect(response.type).to.eq('application/json')
 

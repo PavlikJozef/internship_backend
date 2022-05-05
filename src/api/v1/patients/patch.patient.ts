@@ -41,10 +41,12 @@ export const workflow = async (req: Request, res: Response) => {
     if(patientID.identificationNumber === body.identificationNumber) return res.status(409).json({ message: "Patient with this identification number already exists in database", type: "FAILED"})
 
     const diagnoseID: DiagnoseModel = await DiagnoseModel.findByPk(body.diagnoseID)
-        
-    if(!diagnoseID) return res.status(404).json({ message: `Diagnose with id: ${body.diagnoseID} does not exist in database` , type: "FAILED"})
     
-    const patient: [number, PatientModel[]] = await PatientModel.update(
+    if(body.diagnoseID){
+        if(!diagnoseID) return res.status(404).json({ message: `Diagnose with id: ${body.diagnoseID} does not exist in database` , type: "FAILED"})
+    }
+    
+    await PatientModel.update(
             body
         ,{
             where: {
